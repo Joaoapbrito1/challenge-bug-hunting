@@ -1,24 +1,25 @@
 package service;
 
+import java.text.SimpleDateFormat;
+
 public class VideoValidator {
 
-    public static boolean validarTituloDescricao(String titulo, String descricao) {
-        if (titulo == null || titulo.trim().isEmpty()) {
-            System.out.println("Erro: O título não pode estar vazio.");
-            return false;
-        }
-        if (descricao == null || descricao.trim().isEmpty()) {
-            System.out.println("Erro: A descrição não pode estar vazia.");
-            return false;
-        }
-        return true;
+    public boolean isValidTituloDescricao(String titulo, String descricao) {
+        return titulo != null && !titulo.trim().isEmpty() && descricao != null && !descricao.trim().isEmpty();
     }
 
-    public static boolean validarDuracao(int duracao) {
-        if (duracao <= 0) {
-            System.out.println("Erro: A duração deve ser um número positivo.");
+    public boolean isValidDuracao(int duracao) {
+        return duracao > 0;
+    }
+
+    public boolean isValidData(String dataStr) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            sdf.setLenient(false);
+            sdf.parse(dataStr);
+            return true;
+        } catch (Exception e) {
             return false;
         }
-        return true;
     }
 }
