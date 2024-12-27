@@ -18,26 +18,54 @@ public class Video {
         this.dataPublicacao = dataPublicacao;
     }
 
+    // Getters e Setters
     public String getTitulo() {
         return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public String getDescricao() {
         return descricao;
     }
 
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
     public int getDuracao() {
         return duracao;
+    }
+
+    public void setDuracao(int duracao) {
+        if (duracao > 0) {
+            this.duracao = duracao;
+        } else {
+            throw new IllegalArgumentException("A duração deve ser maior que zero.");
+        }
     }
 
     public String getCategoria() {
         return categoria;
     }
 
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
     public Date getDataPublicacao() {
         return dataPublicacao;
     }
 
+    public void setDataPublicacao(Date dataPublicacao) {
+        if (dataPublicacao != null) {
+            this.dataPublicacao = dataPublicacao;
+        } else {
+            throw new IllegalArgumentException("A data de publicação não pode ser nula.");
+        }
+    }
     @Override
     public String toString() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -47,25 +75,16 @@ public class Video {
     public static Video fromString(String linha) {
         try {
             String[] partes = linha.split(";");
-            if (partes.length != 5) {
-                throw new IllegalArgumentException("Linha de entrada inválida: " + linha);
-            }
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            String titulo = partes[0].trim();
-            String descricao = partes[1].trim();
-            int duracao = Integer.parseInt(partes[2].trim());
-            String categoria = partes[3].trim();
-            Date dataPublicacao = sdf.parse(partes[4].trim());
-
-            // Validações adicionais
-            if (titulo.isEmpty() || descricao.isEmpty() || duracao <= 0 || categoria.isEmpty()) {
-                throw new IllegalArgumentException("Dados do vídeo inválidos: " + linha);
-            }
-
-            return new Video(titulo, descricao, duracao, categoria, dataPublicacao);
+            return new Video(
+                    partes[0],
+                    partes[1],
+                    Integer.parseInt(partes[2]),
+                    partes[3],
+                    sdf.parse(partes[4])
+            );
         } catch (Exception e) {
-            System.err.println("Erro ao converter linha em vídeo: " + e.getMessage());
-            return null;
+            return null; // Ignora erros de parsing
         }
     }
 }
