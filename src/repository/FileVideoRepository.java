@@ -19,7 +19,7 @@ public class FileVideoRepository implements VideoRepository {
             bw.write(video.toString());
             bw.newLine();
         } catch (IOException e) {
-            // Ignorar erros por enquanto
+            System.err.println("Erro ao salvar vídeo no arquivo: " + e.getMessage());
         }
     }
 
@@ -32,10 +32,12 @@ public class FileVideoRepository implements VideoRepository {
                 Video video = Video.fromString(line);
                 if (video != null) {
                     videos.add(video);
+                } else {
+                    System.err.println("Linha ignorada devido a erro de parsing: " + line);
                 }
             }
         } catch (IOException e) {
-            // Ignorar erros por enquanto
+            System.err.println("Erro ao ler arquivo: " + e.getMessage());
         }
         return videos;
     }
