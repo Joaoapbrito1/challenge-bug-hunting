@@ -1,25 +1,25 @@
 package repository;
 
 import model.Video;
-import util.FileHandler;
+import utils.FileHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileVideoRepository implements VideoRepository {
-    private final FileHandler fileHandler;
+    private final String filePath;
 
     public FileVideoRepository(String filePath) {
-        this.fileHandler = new FileHandler(filePath);
+        this.filePath = filePath;
     }
 
     @Override
     public void save(Video video) {
         try {
-            fileHandler.writeLine(video.toString());
+            FileHandler.writeLine(filePath, video.toString(), true);
         } catch (IOException e) {
-            System.err.println("Erro ao salvar vídeo: " + e.getMessage());
+            System.err.println("Erro ao salvar o vídeo: " + e.getMessage());
         }
     }
 
@@ -27,17 +27,15 @@ public class FileVideoRepository implements VideoRepository {
     public List<Video> findAll() {
         List<Video> videos = new ArrayList<>();
         try {
-            List<String> lines = fileHandler.readLines();
+            List<String> lines = FileHandler.readLines(filePath);
             for (String line : lines) {
                 Video video = Video.fromString(line);
                 if (video != null) {
                     videos.add(video);
-                } else {
-                    System.err.println("Linha ignorada devido a erro de parsing: " + line);
                 }
             }
         } catch (IOException e) {
-            System.err.println("Erro ao ler vídeos: " + e.getMessage());
+            System.err.println("Erro ao ler os vídeos: " + e.getMessage());
         }
         return videos;
     }

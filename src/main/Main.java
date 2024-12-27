@@ -1,18 +1,17 @@
 package main;
 
-import model.Video;
+import manager.VideoManager;
 import repository.FileVideoRepository;
-import service.VideoManager;
+import service.VideoService;
+import service.VideoServiceImpl;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        VideoManager videoManager = new VideoManager(new FileVideoRepository("videos.txt"));
+        VideoService videoService = new VideoServiceImpl(new FileVideoRepository("videos.txt"));
+        VideoManager videoManager = new VideoManager(videoService);
 
         while (true) {
             System.out.println("\n=== Sistema de Gerenciamento de Vídeos ===");
@@ -23,41 +22,16 @@ public class Main {
             int opcao = scanner.nextInt();
             scanner.nextLine(); // Consumir a quebra de linha
 
-            if (opcao == 1) {
-                System.out.print("Digite o título do vídeo: ");
-                String titulo = scanner.nextLine();
-                System.out.print("Digite a descrição do vídeo: ");
-                String descricao = scanner.nextLine();
-                System.out.print("Digite a duração do vídeo (em minutos): ");
-                int duracao = scanner.nextInt();
-                scanner.nextLine(); // Consumir a quebra de linha
-                System.out.print("Digite a categoria do vídeo: ");
-                String categoria = scanner.nextLine();
-                System.out.print("Digite a data de publicação (dd/MM/yyyy): ");
-                String dataStr = scanner.nextLine();
-
-                try {
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    Date dataPublicacao = sdf.parse(dataStr);
-                    Video video = new Video(titulo, descricao, duracao, categoria, dataPublicacao);
-                    videoManager.addVideo(video);
-                    System.out.println("Vídeo adicionado com sucesso!");
-                } catch (Exception e) {
-                    System.out.println("Erro ao adicionar vídeo.");
+            switch (opcao) {
+                case 1 -> videoManager.adicionarVideo(scanner);
+                case 2 -> videoManager.listarVideos();
+                case 3 -> {
+                    System.out.println("Saindo do sistema...");
+                    scanner.close();
+                    return;
                 }
-            } else if (opcao == 2) {
-                List<Video> videos = videoManager.listVideos();
-                for (Video video : videos) {
-                    System.out.println(video);
-                }
-            } else if (opcao == 3) {
-                System.out.println("Saindo do sistema...");
-                break;
-            } else {
-                System.out.println("Opção inválida.");
+                default -> System.out.println("Opção inválida.");
             }
         }
-
-        scanner.close();
     }
 }
