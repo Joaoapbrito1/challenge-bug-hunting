@@ -1,75 +1,76 @@
 package service;
 
 import model.Video;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Scanner;
 
 public class VideoValidator {
+    private final Scanner scanner = new Scanner(System.in);
 
-    public boolean validateTitle(String titulo, List<Video> existingVideos) {
-        if (titulo.isEmpty()) {
-            System.out.println("Erro: O título não pode estar vazio.");
+    public boolean validateTitle(String title, List<Video> existingVideos) {
+        if (title == null || title.trim().isEmpty()) {
+            System.out.println("Erro: O título não pode ser vazio.");
             return false;
         }
-        if (existingVideos.stream().anyMatch(video -> video.getTitulo().equalsIgnoreCase(titulo))) {
-            System.out.println("Erro: Já existe um vídeo com este título.");
+        boolean exists = existingVideos.stream()
+                .anyMatch(video -> video.getTitulo().equalsIgnoreCase(title));
+        if (exists) {
+            System.out.println("Erro: Já existe um vídeo com esse título.");
             return false;
         }
         return true;
     }
 
-    public boolean validateDescription(String descricao) {
-        if (descricao.isEmpty()) {
-            System.out.println("Erro: A descrição não pode estar vazia.");
+    public boolean validateDescription(String description) {
+        if (description == null || description.trim().isEmpty()) {
+            System.out.println("Erro: A descrição não pode ser vazia.");
             return false;
         }
         return true;
     }
 
-    public boolean validateDuration(int duracao) {
-        if (duracao <= 0) {
-            System.out.println("Erro: A duração deve ser um número positivo.");
+    public boolean validateDuration(int duration) {
+        if (duration <= 0) {
+            System.out.println("Erro: A duração deve ser maior que zero.");
             return false;
         }
         return true;
+    }
+
+    public boolean validateDate(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setLenient(false);
+        try {
+            sdf.parse(date);
+            return true;
+        } catch (ParseException e) {
+            System.out.println("Erro: A data fornecida é inválida.");
+            return false;
+        }
     }
 
     public String chooseCategory() {
-        Scanner scanner = new Scanner(System.in);
-        String[] categorias = {"Filme", "Serie", "Podcast", "Video", "Videoclipe", "Dvd"};
-        String categoria = "";
-
         System.out.println("Escolha a categoria do vídeo:");
-        for (int i = 0; i < categorias.length; i++) {
-            System.out.println((i + 1) + ". " + categorias[i]);
-        }
+        System.out.println("1 - Educação");
+        System.out.println("2 - Entretenimento");
+        System.out.println("3 - Tecnologia");
+        System.out.println("4 - Outros");
 
-        while (categoria.isEmpty()) {
-            System.out.print("Digite o número da categoria: ");
-            try {
-                int escolha = Integer.parseInt(scanner.nextLine());
-                if (escolha < 1 || escolha > categorias.length) {
-                    System.out.println("Erro: Categoria inválida.");
-                } else {
-                    categoria = categorias[escolha - 1];
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Erro: Por favor, digite um número válido.");
-            }
-        }
-        return categoria;
-    }
-
-    public boolean validateDate(String dataPublicacaoStr) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            sdf.setLenient(false);
-            sdf.parse(dataPublicacaoStr);
-            return true;
-        } catch (Exception e) {
-            System.out.println("Erro: A data fornecida é inválida.");
-            return false;
+        String option = scanner.nextLine();
+        switch (option) {
+            case "1":
+                return "Educação";
+            case "2":
+                return "Entretenimento";
+            case "3":
+                return "Tecnologia";
+            case "4":
+                return "Outros";
+            default:
+                System.out.println("Categoria inválida. Usando 'Outros' como padrão.");
+                return "Outros";
         }
     }
 }

@@ -9,3 +9,4 @@ wqw;121;12;Filme;12/04/2024
 qq;we;12;Filme;12/05/2000
 joao;brito;12;Filme;12/03/2000
 joao;brito;12;Filme;12/03/2000
+joao brito;qq;12;Outros;12/05/2002

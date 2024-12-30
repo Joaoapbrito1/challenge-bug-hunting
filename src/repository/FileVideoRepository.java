@@ -4,7 +4,6 @@ import model.Video;
 import utils.FileHandler;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FileVideoRepository implements VideoRepository {
@@ -25,18 +24,24 @@ public class FileVideoRepository implements VideoRepository {
 
     @Override
     public List<Video> findAll() {
-        List<Video> videos = new ArrayList<>();
         try {
-            List<String> lines = FileHandler.readLines(filePath);
-            for (String line : lines) {
-                Video video = Video.fromString(line);
-                if (video != null) {
-                    videos.add(video);
-                }
-            }
+            return FileHandler.readLines(filePath).stream()
+                    .map(Video::fromString)
+                    .toList();
         } catch (IOException e) {
             System.err.println("Erro ao ler os vídeos: " + e.getMessage());
+            return List.of();
         }
-        return videos;
+    }
+
+    @Override
+    public void saveAll(List<Video> videos) {
+        try {
+            for (Video video : videos) {
+                FileHandler.writeLine(filePath, video.toString(), false);
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar os vídeos: " + e.getMessage());
+        }
     }
 }
