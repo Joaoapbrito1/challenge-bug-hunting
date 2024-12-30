@@ -1,19 +1,21 @@
 package main;
 
-import model.Video;
-import service.VideoManager;
 import repository.FileVideoRepository;
+import repository.VideoRepository;
+import service.VideoManager;
 import strategy.SearchStrategy;
 import strategy.TitleSearchStrategy;
 
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        VideoManager videoManager = new VideoManager(new FileVideoRepository("videos.txt"));
+        VideoRepository videoRepository = new FileVideoRepository("videos.txt");
+        VideoManager videoManager = new VideoManager(videoRepository);
         SearchStrategy searchStrategy = new TitleSearchStrategy();
+
+        Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.println("\n=== Sistema de Gerenciamento de Vídeos ===");
@@ -25,27 +27,21 @@ public class Main {
             int opcao = scanner.nextInt();
             scanner.nextLine(); // Consumir a quebra de linha
 
-            if (opcao == 1) {
-                videoManager.addVideo();
-            } else if (opcao == 2) {
-                List<Video> videos = videoManager.listVideos();
-                for (Video video : videos) {
-                    System.out.println(video);
+            switch (opcao) {
+                case 1 -> videoManager.addVideo();
+                case 2 -> videoManager.listVideos();
+                case 3 -> {
+                    System.out.print("Digite o título para busca: ");
+                    String query = scanner.nextLine();
+                    searchStrategy.search(videoRepository.findAll(), query)
+                            .forEach(System.out::println);
                 }
-            } else if (opcao == 3) {
-                System.out.print("Digite o título para busca: ");
-                String query = scanner.nextLine();
-                List<Video> resultados = searchStrategy.search(videoManager.listVideos(), query);
-                for (Video video : resultados) {
-                    System.out.println(video);
+                case 4 -> {
+                    System.out.println("Saindo do sistema...");
+                    return;
                 }
-            } else if (opcao == 4) {
-                System.out.println("Saindo do sistema...");
-                break;
-            } else {
-                System.out.println("Opção inválida.");
+                default -> System.out.println("Opção inválida.");
             }
         }
-        scanner.close();
     }
 }

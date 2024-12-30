@@ -9,94 +9,76 @@ import java.util.List;
 import java.util.Scanner;
 
 public class VideoManager {
-    private final VideoRepository videoRepository;
-    private final VideoValidator videoValidator;
+    private final VideoRepository repository;
+    private final VideoValidator validator = new VideoValidator();
+    private final Scanner scanner = new Scanner(System.in);
 
-    public VideoManager(VideoRepository videoRepository) {
-        this.videoRepository = videoRepository;
-        this.videoValidator = new VideoValidator();
+    public VideoManager(VideoRepository repository) {
+        this.repository = repository;
     }
 
     public void addVideo() {
-        Scanner scanner = new Scanner(System.in);
+        List<Video> existingVideos = repository.findAll();
 
-        System.out.print("Digite o título do vídeo: ");
-        String titulo = scanner.nextLine();
+        String titulo, descricao, categoria, dataPublicacaoStr;
+        int duracao;
 
-        System.out.print("Digite a descrição do vídeo: ");
-        String descricao = scanner.nextLine();
-
-        // Validar título e descrição
-        if (!videoValidator.isValidTituloDescricao(titulo, descricao)) {
-            System.out.println("Título e descrição não podem estar vazios.");
-            return;
+        while (true) {
+            System.out.print("Digite o título do vídeo: ");
+            titulo = scanner.nextLine();
+            if (validator.validateTitle(titulo, existingVideos)) {
+                break;
+            }
         }
 
-        System.out.print("Digite a duração do vídeo (em minutos): ");
-        int duracao = scanner.nextInt();
-        scanner.nextLine(); // Consumir a quebra de linha
-
-        // Validar duração
-        if (!videoValidator.isValidDuracao(duracao)) {
-            System.out.println("A duração deve ser um número positivo.");
-            return;
+        while (true) {
+            System.out.print("Digite a descrição do vídeo: ");
+            descricao = scanner.nextLine();
+            if (validator.validateDescription(descricao)) {
+                break;
+            }
         }
 
-        // Apresentar lista de categorias
-        String categoria = escolherCategoria(scanner);
-
-        if (categoria == null) {
-            System.out.println("Categoria inválida selecionada.");
-            return;
+        while (true) {
+            System.out.print("Digite a duração do vídeo (em minutos): ");
+            try {
+                duracao = Integer.parseInt(scanner.nextLine());
+                if (validator.validateDuration(duracao)) {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Erro: A duração deve ser um número válido.");
+            }
         }
 
-        System.out.print("Digite a data de publicação (dd/MM/yyyy): ");
-        String dataStr = scanner.nextLine();
+        categoria = validator.chooseCategory();
 
-        // Validar data
-        if (!videoValidator.isValidData(dataStr)) {
-            System.out.println("Data inválida.");
-            return;
+        while (true) {
+            System.out.print("Digite a data de publicação (dd/MM/yyyy): ");
+            dataPublicacaoStr = scanner.nextLine();
+            if (validator.validateDate(dataPublicacaoStr)) {
+                break;
+            }
         }
 
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            Date dataPublicacao = sdf.parse(dataStr);
+            Date dataPublicacao = sdf.parse(dataPublicacaoStr);
+
             Video video = new Video(titulo, descricao, duracao, categoria, dataPublicacao);
-            videoRepository.save(video);
+            repository.save(video);
             System.out.println("Vídeo adicionado com sucesso!");
         } catch (Exception e) {
-            System.out.println("Erro ao adicionar vídeo.");
+            System.out.println("Erro ao salvar o vídeo: " + e.getMessage());
         }
     }
 
-    private String escolherCategoria(Scanner scanner) {
-        // Exibe as opções de categoria para o usuário
-        System.out.println("Escolha a categoria do vídeo:");
-        System.out.println("1. Filme");
-        System.out.println("2. Série");
-        System.out.println("3. Podcast");
-        System.out.println("4. Vídeo");
-        System.out.println("5. Videoclipe");
-        System.out.println("6. DVD");
-        System.out.print("Escolha uma opção (1-6): ");
-
-        int opcao = scanner.nextInt();
-        scanner.nextLine(); // Consumir a quebra de linha
-
-        // Retorna a categoria baseada na escolha do usuário
-        switch (opcao) {
-            case 1: return "Filme";
-            case 2: return "Série";
-            case 3: return "Podcast";
-            case 4: return "Vídeo";
-            case 5: return "Videoclipe";
-            case 6: return "DVD";
-            default: return null;
+    public void listVideos() {
+        List<Video> videos = repository.findAll();
+        if (videos.isEmpty()) {
+            System.out.println("Nenhum vídeo encontrado.");
+        } else {
+            videos.forEach(System.out::println);
         }
-    }
-
-    public List<Video> listVideos() {
-        return videoRepository.findAll();
     }
 }

@@ -40,11 +40,7 @@ public class Video {
     }
 
     public void setDuracao(int duracao) {
-        if (duracao > 0) {
-            this.duracao = duracao;
-        } else {
-            throw new IllegalArgumentException("A duração deve ser maior que zero.");
-        }
+        this.duracao = duracao;
     }
 
     public String getCategoria() {
@@ -60,12 +56,9 @@ public class Video {
     }
 
     public void setDataPublicacao(Date dataPublicacao) {
-        if (dataPublicacao != null) {
-            this.dataPublicacao = dataPublicacao;
-        } else {
-            throw new IllegalArgumentException("A data de publicação não pode ser nula.");
-        }
+        this.dataPublicacao = dataPublicacao;
     }
+
     @Override
     public String toString() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -76,15 +69,9 @@ public class Video {
         try {
             String[] partes = linha.split(";");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            return new Video(
-                    partes[0],
-                    partes[1],
-                    Integer.parseInt(partes[2]),
-                    partes[3],
-                    sdf.parse(partes[4])
-            );
+            return new Video(partes[0], partes[1], Integer.parseInt(partes[2]), partes[3], sdf.parse(partes[4]));
         } catch (Exception e) {
-            return null; // Ignora erros de parsing
+            return null; // Retorna null em caso de erro
         }
     }
 }
