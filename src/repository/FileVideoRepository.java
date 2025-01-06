@@ -1,7 +1,7 @@
 package repository;
 
 import model.Video;
-import utils.FileHandler;
+import util.FileHandler;
 
 import java.io.IOException;
 import java.util.List;

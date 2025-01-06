@@ -1,12 +1,2 @@
-qq;qq;12;qq;12/05/2002
-qq;12;12;qw;12/05/2023
-jj;sss;12;111;12/05/2030
-qq;qq;12;sss;12/12/2012
-qq;wdwdw;12;Filme;12/05/2022
-qqq;weqeq;12;qwq;12/02/2020
-ddwd;sweqe;12;Filme;12/05/2002
-wqw;121;12;Filme;12/04/2024
-qq;we;12;Filme;12/05/2000
-joao;brito;12;Filme;12/03/2000
-joao;brito;12;Filme;12/03/2000
-joao brito;qq;12;Outros;12/05/2002
+QQ;QQ;12;Educação;12/02/1890
+QQ;QQ;12;Outros;12/02/1890

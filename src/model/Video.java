@@ -18,7 +18,6 @@ public class Video {
         this.dataPublicacao = dataPublicacao;
     }
 
-    // Getters e Setters
     public String getTitulo() {
         return titulo;
     }
@@ -71,7 +70,7 @@ public class Video {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             return new Video(partes[0], partes[1], Integer.parseInt(partes[2]), partes[3], sdf.parse(partes[4]));
         } catch (Exception e) {
-            return null; // Retorna null em caso de erro
+            return null;
         }
     }
 }

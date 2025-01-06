@@ -53,24 +53,21 @@ public class VideoValidator {
 
     public String chooseCategory() {
         System.out.println("Escolha a categoria do vídeo:");
-        System.out.println("1 - Educação");
-        System.out.println("2 - Entretenimento");
-        System.out.println("3 - Tecnologia");
+        System.out.println("1 - Filme");
+        System.out.println("2 - Série");
+        System.out.println("3 - Documentario");
         System.out.println("4 - Outros");
 
         String option = scanner.nextLine();
-        switch (option) {
-            case "1":
-                return "Educação";
-            case "2":
-                return "Entretenimento";
-            case "3":
-                return "Tecnologia";
-            case "4":
-                return "Outros";
-            default:
+        return switch (option) {
+            case "1" -> "Filme";
+            case "2" -> "Série";
+            case "3" -> "Documentario";
+            case "4" -> "Outros";
+            default -> {
                 System.out.println("Categoria inválida. Usando 'Outros' como padrão.");
-                return "Outros";
-        }
+                yield "Outros";
+            }
+        };
     }
 }

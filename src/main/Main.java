@@ -5,25 +5,21 @@ import repository.VideoRepository;
 import service.VideoManager;
 import strategy.SearchStrategy;
 import strategy.TitleSearchStrategy;
+import util.Menu;
 
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         VideoRepository videoRepository = new FileVideoRepository("videos.txt");
         VideoManager videoManager = new VideoManager(videoRepository);
         SearchStrategy searchStrategy = new TitleSearchStrategy();
+        boolean isManuOpen = true;
+        Menu menu = new Menu();
 
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.println("\n=== Sistema de Gerenciamento de Vídeos ===");
-            System.out.println("1. Adicionar vídeo");
-            System.out.println("2. Listar vídeos");
-            System.out.println("3. Pesquisar vídeo por título");
-            System.out.println("4. Editar vídeo");
-            System.out.println("5. Sair");
-            System.out.print("Escolha uma opção: ");
-
+        while (isManuOpen) {
+            menu.exibirMenu();
             int opcao = -1;
             try {
                 opcao = Integer.parseInt(scanner.nextLine());
@@ -33,6 +29,7 @@ public class Main {
 
             switch (opcao) {
                 case 1:
+
                     videoManager.addVideo();
                     break;
                 case 2:
